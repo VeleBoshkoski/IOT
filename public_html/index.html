@@ -1,0 +1,262 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Rain Skopje</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <form class="navbar-form navbar-right" role="form">
+<!--            <div class="form-group">
+              <input type="text" placeholder="Email" class="form-control">
+            </div>
+            <div class="form-group">
+              <input type="password" placeholder="Password" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">Sign in</button>-->
+          </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+         <div id="map"></div>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+          <div >
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Device</th>
+                    <th>Location</th>
+                    <th>Rain</th>
+                    <th>Visible Light</th>
+                    <th>UV</th>
+                    <th>Wet</th>
+                    <th>Time</th>
+                  </tr>
+                </thead>
+                <tbody id="tab">
+                 
+                </tbody>
+            </table>
+          </div>
+      </div>
+
+      <hr>
+
+      <footer class="footer">
+        <p>&copy; Skopje 2017</p>
+      </footer>
+    </div> <!-- /container -->        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+
+        <script src="js/vendor/bootstrap.min.js"></script>
+
+        <script src="js/main.js"></script>
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='//www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-XXXXX-X','auto');ga('send','pageview');
+            
+            var device = [
+                {
+                    id: "111",
+                    lat: 41.9948,
+                    lng: 21.4223,
+                    rain: 1,
+                    visibleLight: 0.76,
+                    UV: 0,
+                    wet: 0,
+                    time: "2017-08-02T11:26:32.302996834Z"
+                }
+            ];
+            function initMap() {
+            var myLatLng = {lat: 41.9973, lng: 21.4280};
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 13,
+              center: myLatLng
+            });
+              
+            var icons = {
+              rain: {
+                icon: './img/cloud-rain-icon-11061.png'
+              },
+              sun: {
+                icon: './img/sunny-icon-23519.png'
+              }
+            };
+            
+            var features = [];
+        
+            // Create devices.
+            
+            
+            
+            function addToMap(device){
+                device.forEach(function (dev){
+                    var feature = {
+                       position: new google.maps.LatLng(dev.lat, dev.lng),
+                       type: (dev.rain == true) ? 'rain' : 'sun',
+                       device: dev
+                    }
+                    features.push(feature)
+                });
+            }
+            function addTableChildern(device){
+                $("#tab").html("");
+                
+                device.forEach(function (dev){
+                    var child = "<tr>"+
+                                "<td>" + dev.id + "</td>" +
+                                "<td>" + dev.lat + "x" + dev.lng + "</td>" +
+                                "<td>" + ((dev.rain == true) ? 'yes' : 'no') + "</td>" +
+                                "<td>" + dev.visibleLight*100 + "%</td>" +
+                                "<td>" + dev.UV + "</td>" +
+                                "<td>" + dev.wet + "%</td>" +
+                                "<td>" + new Date(dev.time).toLocaleString("de-DE") + "</td>" +
+                                "</tr>";
+                    $("#tab").append(child);
+                });
+                
+            }
+            
+            
+            function drawMapMarkers(){
+                features.forEach(function(feature) {
+                    var contentString = '<div>'+
+                                        "<div> <span>Id: </span>" + feature.device.id + "</div>" +
+                                        "<div> <span>Locaiton: </span>" + feature.device.lat + "x" + feature.device.lng + "</div>" +
+                                        "<div> <span>Rain: </span>" + ((feature.device.rain == true) ? 'yes' : 'no') + "</div>" +
+                                        "<div> <span>Visible light: </span>" + feature.device.visibleLight*100 + "%</div>" +
+                                        "<div> <span>UV: </span>" + feature.device.UV + "</div>" +
+                                        "<div> <span>Wet: </span>" + feature.device.wet + "%</div>" +
+                                        "<div> <span>Time: </span>" + new Date(feature.device.time).toLocaleString("de-DE") + "</div>"
+                                        +'<div>';
+
+                    var infowindow = new google.maps.InfoWindow({
+                        content: contentString
+                    });
+                    var marker = new google.maps.Marker({
+                        position: feature.position,
+                        icon: icons[feature.type].icon,
+                        map: map
+                    });
+                    marker.addListener('click', function() {
+                        infowindow.open(map, marker);
+                    });
+                });
+            }
+            
+            
+            function getData(){
+                var serverData = null;
+                $.getJSON('http://crypter.dynu.com/FTA/lora/WEB/index.php?/api/v2/query', function(data) {
+                    //data is the JSON string
+                    serverData = data;
+                    if(serverData != null){
+                        parseToDevice(serverData);
+                        addToMap(device);
+                        drawMapMarkers();
+                        addTableChildern(device);
+                    }
+                });
+            }
+            function parseToDevice(serverData){
+                var devicesTemp = [];
+                for(i = 0; i < serverData.length; i++)
+                {
+                    var dev =  {
+                                    id: serverData[i].device_id,
+                                    lat: 42.005965,
+                                    lng: 21.396550,
+                                    rain: serverData[i].Raining,
+                                    visibleLight: serverData[i].VisibleLight,
+                                    UV: serverData[i].UV,
+                                    wet: serverData[i].Wet,
+                                    time: serverData[i].time
+                                }
+                    devicesTemp.push(dev);
+                }
+                var devicesTemp1 = [];
+                var exists = false;
+                devicesTemp.forEach(function(devi){
+                    exists = false;
+                    for(var i = 0; i < devicesTemp1.length; i++){
+                        if (devi.device_id == devicesTemp1[i].device_id){
+                            exists = true; 
+                            if(devi.time > devicesTemp1[i].time)
+                                devicesTemp1[i] = devi;
+                        }
+                    }
+                    if(exists) {
+                        
+                    }
+                    else {
+                        devicesTemp1.push(devi);
+                    }
+                });
+                device.length = 0;
+                device = devicesTemp1;
+                
+                
+                addToMap(device);
+            }
+            
+            getData();
+            
+        }
+        window.setInterval(function(){
+               initMap()
+            }, 300 * 1000);
+        </script>
+        <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdVZHLhPoH4l7lKTIT_5Erh47Qj2CQiFc&callback=initMap">
+        </script>
+    </body>
+</html>
